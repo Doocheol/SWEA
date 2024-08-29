@@ -10,17 +10,15 @@ public class Main {
 		int plates = Integer.parseInt(s[0]);
 		int num = Integer.parseInt(s[2]);
 		int coupon = Integer.parseInt(s[3]);
-		int service = 1;
 		
 		Map<Integer, Integer> sushi = new HashMap<>();
 		Queue<Integer> queue = new LinkedList<Integer>();
 		Queue<Integer> queue2 = new LinkedList<Integer>();
 		
 		
-//		sushi.put(coupon, 1);
+		sushi.put(coupon, 1);
 		for (int i = 0; i < num; i++) {
 			int n = Integer.parseInt(br.readLine());
-			if (n == coupon) service = 0;
 			if (sushi.get(n) == null) {
 				sushi.put(n, 1);
 			} else {
@@ -30,7 +28,7 @@ public class Main {
 			queue2.offer(n);
 		}
 
-		int max = sushi.size() + service;
+		int max = sushi.size();
 		
 		int n, size;
 		for (int i = 0; i < plates-num; i++) {
@@ -38,11 +36,8 @@ public class Main {
 			size = sushi.remove(n);
 			if (size > 1)
 				sushi.put(n, size-1);
-			else 
-				if (n == coupon) service = 1;
 			
 			n = Integer.parseInt(br.readLine());
-			if (n == coupon) service = 0;
 			if (sushi.get(n) == null) {
 				sushi.put(n, 1);
 			} else {
@@ -50,7 +45,7 @@ public class Main {
 			}
 			
 			queue.offer(n);
-			max = Math.max(max, sushi.size() + service);
+			max = Math.max(max, sushi.size());
 		}
 		
 		for (int i = 0; i < num-1; i++) {
@@ -58,11 +53,8 @@ public class Main {
 			size = sushi.remove(n);
 			if (size > 1)
 				sushi.put(n, size-1);
-			else
-				if (n == coupon) service = 1;
 			
 			n = queue2.poll();
-			if (n == coupon) service = 0;
 			if (sushi.get(n) == null) {
 				sushi.put(n, 1);
 			} else {
@@ -70,7 +62,7 @@ public class Main {
 			}
 			
 			queue.offer(n);
-			max = Math.max(max, sushi.size() + service);
+			max = Math.max(max, sushi.size());
 		}
 		
 		System.out.println(max);
