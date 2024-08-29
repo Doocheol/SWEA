@@ -26,36 +26,32 @@ public class Main {
 			}
 		}
 		
-		String number;
 		int size = list.size();
 		for (int i = 0; i < size-1; i++) {
 			if (repeat.contains(list.get(i))) {
-				number = list.get(i)*list.get(i) + "";
-				sum = 0;
-				for (int k = 0; k < number.length(); k++) {
-					sum += number.charAt(k) - '0';
-				}
+				sum = getSum(list.get(i), list.get(i));
 				max = Math.max(max, sum);
 			}
 			for (int j = i+1; j < size; j++	) {
-				number = list.get(i)*list.get(j) + "";
-				sum = 0;
-				for (int k = 0; k < number.length(); k++) {
-					sum += number.charAt(k) - '0';
-				}
+				sum = getSum(list.get(i), list.get(j));
 				max = Math.max(max, sum);
 			}
 		}
 		
 		if (repeat.contains(list.get(size-1))) {
-			number = list.get(size-1)*list.get(size-1) + "";
-			sum = 0;
-			for (int k = 0; k < number.length(); k++) {
-				sum += number.charAt(k) - '0';
-			}
+			sum = getSum(list.get(size-1), list.get(size-1));
 			max = Math.max(max, sum);
 		}
 		
 		System.out.println(max);
+	}
+	
+	static int getSum(int a, int b) {
+		String number = a*b + "";
+		int sum = 0;
+		for (int k = 0; k < number.length(); k++) {
+			sum += number.charAt(k) - '0';
+		}
+		return sum;
 	}
 }
