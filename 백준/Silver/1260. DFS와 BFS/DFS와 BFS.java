@@ -1,80 +1,79 @@
-
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
-import java.util.StringTokenizer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Main {
-	
-	static int N, M;
-	static boolean[] visited, qIn;
-	static ArrayDeque<Integer> q = new ArrayDeque<>();
-	static StringBuilder sb;
+	static ArrayList<Integer> [] arr;
+	static boolean [] visit;
 	
 	public static void main(String[] args) throws Exception {
-		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		sb = new StringBuilder(100);
+		String [] nmv = br.readLine().trim().split(" ");
+		int n = Integer.parseInt(nmv[0]);
+		int m = Integer.parseInt(nmv[1]);
+		int v = Integer.parseInt(nmv[2]);
 		
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		int start = Integer.parseInt(st.nextToken());
+		arr = new ArrayList[n+1];
+		visit = new boolean[n+1];
 		
-		int[][] adjMatrix = new int[N+1][N+1];
-		
-		for (int i = 0; i < M; i++) {
-			st = new StringTokenizer(br.readLine());
-			int from = Integer.parseInt(st.nextToken());
-			int to = Integer.parseInt(st.nextToken());
-			adjMatrix[from][to] = adjMatrix[to][from] = 1;
+		for(int i = 0;i<=n;i++) {
+			arr[i] = new ArrayList<>();
 		}
 		
-		visited = new boolean[N+1];
-		dfs(adjMatrix, start);
-		
-		sb.append("\n");
-		
-		qIn = new boolean[N+1];
-		bfs(adjMatrix, start);
 
-		bw.write(sb.toString());
-		bw.flush();
-		bw.close();
-		br.close();
+		for(int i = 0;i<m;i++) {
+			String[] nmarr= br.readLine().trim().split(" ");
+			int a = Integer.parseInt(nmarr[0]);
+			int b = Integer.parseInt(nmarr[1]);
+			arr[a].add(b);
+			arr[b].add(a);
+		}
+        for(int i = 0;i<arr.length;i++){
+            Collections.sort(arr[i]);
+            
+        }
+
+		visit = new boolean[n+1];
+		dfs(v);
+		System.out.println();
+		
+		visit = new boolean[n+1];
+		bfs(v);
 		
 	}
 
-	private static void dfs(int[][] adjMatrix, int cur) {
-		visited[cur] = true;
-		sb.append(cur).append(" ");
+	private static void bfs(int v) {
+		Queue<Integer> que = new LinkedList<>();
+		que.add(v);
 		
-		for (int i = 1; i <= N; i++) {
-			if (!visited[i] && adjMatrix[cur][i] != 0) {
-				dfs(adjMatrix, i);
-			}
-		}
-
-		
-	}
-
-	private static void bfs(int[][] adjMatrix, int cur) {
-		q.offer(cur);
-		qIn[cur] = true;
-		while(!q.isEmpty()) {
-			int current = q.poll();
-			sb.append(current).append(" ");
-			for (int i = 1; i <= N; i++) {
-				if (!qIn[i] && adjMatrix[current][i] != 0) {
-					q.offer(i);
-					qIn[i] = true;
+		visit[v] = true;
+		while(!que.isEmpty()) {
+			int now = que.poll();
+			System.out.print(now + " ");
+			for (int x : arr[now]) {
+				if(visit[x] == false) {
+					visit[x] = true;
+					que.add(x);
 				}
+				
+			}
+		}
+		
+		
+	}
+
+	private static void dfs(int v) {
+		System.out.print(v + " ");
+		visit[v] = true;
+		
+		for (int x : arr[v]) {
+			if(visit[x]==false) {
+				dfs(x);
 			}
 		}
 		
 	}
-	
 }
