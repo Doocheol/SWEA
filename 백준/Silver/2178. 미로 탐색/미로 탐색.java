@@ -1,69 +1,62 @@
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	
 	static int N, M;
-	static int[][] adjMatrix, visited;
-	static int[] dr = {-1, 1, 0, 0};
-	static int[] dc = {0, 0, -1, 1};
-	static Deque<int[]> queue = new ArrayDeque<>();
-	
+
 	public static void main(String[] args) throws Exception {
-		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		StringBuilder sb = new StringBuilder();
-		
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		adjMatrix = new int[N][M];
-		visited = new int[N][M];
-		
-		for (int row = 0; row < N; row++) {
-			String[] line = br.readLine().split("");
-			for (int column = 0; column < M; column++) {
-				adjMatrix[row][column] = Integer.parseInt(line[column]);
-				visited[row][column] = -1;
+
+		String[] str = br.readLine().split(" ");
+		N = Integer.parseInt(str[0]);
+		M = Integer.parseInt(str[1]);
+		int[][] map = new int[N][M];
+
+		for (int i = 0; i < N; i++) {
+			String[] str2 = br.readLine().split("");
+			for (int j = 0; j < M; j++) {
+				map[i][j] = Integer.parseInt(str2[j]);
 			}
 		}
-		
-		bfs(0, 0);
-		sb.append(visited[N-1][M-1]);
-		bw.write(sb.toString());
+		int[] start = { 0, 0 };
+		int ans = bfs(map, new boolean[N][M], start);
+
+		bw.write(Integer.toString(ans));
 		bw.flush();
 		bw.close();
 		br.close();
-		
 	}
 
-	private static void bfs(int x, int y) {
-		queue.offer(new int[] {x, y});
-		visited[x][y] = 1; // true 표시
-		
-		while(!queue.isEmpty()) {
-			int[] currentXY = queue.poll();
-			for (int d = 0; d < 4; d++) {
-				int nr = currentXY[0] + dr[d];
-				int nc = currentXY[1] + dc[d];
-				
-				if (!(nr < 0 || nr >= N || nc < 0 || nc >= M)) {
-					if (adjMatrix[nr][nc] == 1 && visited[nr][nc] == -1) {
-						queue.offer(new int[] {nr, nc});
-						visited[nr][nc] = visited[currentXY[0]][currentXY[1]] + 1;
+	static ArrayDeque<int[]> q = new ArrayDeque<>();
+
+	static int bfs(int[][] map, boolean[][] qIn, int[] cur) {
+		int[][] distance = new int[N][M];
+		distance[0][0] = 1;
+		q.offer(cur);
+		qIn[cur[0]][cur[1]] = true;
+		while (!q.isEmpty()) {
+			int[] current = q.poll();
+			int x = current[0];
+			int y = current[1];
+			int[] dx = { 0, 0, -1, 1 };
+			int[] dy = { -1, 1, 0, 0 };
+			for (int i = 0; i < 4; i++) {
+				int nx = x + dx[i];
+				int ny = y + dy[i];
+				if (nx >= 0 && nx < N && ny >= 0 && ny < M && map[nx][ny] != 0 && qIn[nx][ny] != true) {
+					int[] neew = { nx, ny };
+					q.offer(neew);
+					qIn[nx][ny] = true;
+					distance[nx][ny] = distance[x][y] + 1;
+					if (nx == N-1 && ny == M-1) {
+						return distance[nx][ny];
 					}
 				}
 			}
-		}
-		
-		
-	}
 
+		}
+		return -1;
+	}
 }
