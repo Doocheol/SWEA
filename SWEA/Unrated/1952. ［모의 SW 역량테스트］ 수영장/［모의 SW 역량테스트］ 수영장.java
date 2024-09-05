@@ -1,18 +1,12 @@
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Solution {
 	
-	static int N = 12;
+	static final int TOTAL_MONTHS = 12;
 	static int[] count;
-	static boolean[] isVisited;
-	static int daily, monthly, threeMonthly, yearly;
-	static int minCost;
+	static int daily, monthly, threeMonthly, yearly, minCost;
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -21,30 +15,32 @@ public class Solution {
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		StringBuilder sb = new StringBuilder();
 		
-		int T = Integer.parseInt(br.readLine().trim());
+		int T = Integer.parseInt(br.readLine());
 		
-		for (int tc = 1; tc<=T; tc++) {
+		for (int tc = 1; tc <= T; tc++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			daily = Integer.parseInt(st.nextToken());
 			monthly = Integer.parseInt(st.nextToken());
 			threeMonthly = Integer.parseInt(st.nextToken());
 			yearly = Integer.parseInt(st.nextToken());
 			
+			count = new int[TOTAL_MONTHS + 1];
 			
-			count = new int[N+1];
 			st = new StringTokenizer(br.readLine());
-			for (int i = 1; i <= N; i++) {
+			for (int i = 1; i <= TOTAL_MONTHS; i++) {
 				count[i] = Integer.parseInt(st.nextToken());
 			}
 			
 			minCost = yearly;
 			dfs(1, 0);
 			sb.append("#").append(tc).append(" ").append(minCost).append("\n");
+			
 		}
 		bw.write(sb.toString());
 		bw.flush();
 		bw.close();
 		br.close();
+		
 	}
 
 	private static void dfs(int month, int currentCost) {
@@ -52,7 +48,7 @@ public class Solution {
 			return;
 		}
 		
-		if (month > N) {
+		if (month > TOTAL_MONTHS) {
 			minCost = Math.min(minCost, currentCost);
 			return;
 		}
@@ -60,11 +56,10 @@ public class Solution {
 		if (count[month] == 0) {
 			dfs(month + 1, currentCost);
 		} else {
-			dfs(month + 1, currentCost + count[month] * daily);
+			dfs(month + 1, currentCost + daily * count[month]);
 			dfs(month + 1, currentCost + monthly);
 			dfs(month + 3, currentCost + threeMonthly);
 		}
-		
 		
 	}
 
